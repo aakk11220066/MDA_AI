@@ -174,7 +174,6 @@ def get_mda_problem(
     loaded_problems_by_size_and_opt_obj[(problem_input_size, optimization_objective)] = problem
     return problem
 
-
 def basic_mda_problem_experiments():
     print()
     print('Solve the MDA problem (small input, only distance objective, UniformCost).')
@@ -238,14 +237,17 @@ def monetary_cost_objectives_mda_problem_experiments():
     moderate_mda_problem_with_monetary_cost = get_mda_problem('moderate', MDAOptimizationObjective.Monetary)
 
     # Ex.32
-    # TODO: create an instance of `UniformCost`
+    # DONE: create an instance of `UniformCost`
+    uc = UniformCost()
     #       solve the `small_mda_problem_with_monetary_cost` with it and print the results.
-    exit()  # TODO: remove!
+    uc.solve_problem(small_mda_problem_with_monetary_cost)
+    exit() # TODO: remove!
 
     # Ex.32
-    # TODO: create an instance of `UniformCost`
+    # DONE: create an instance of `UniformCost`
     #       solve the `moderate_mda_problem_with_monetary_cost` with it and print the results.
-    exit()  # TODO: remove!
+    uc.solve_problem(moderate_mda_problem_with_monetary_cost)
+    exit() # TODO: remove!
 
 
 def multiple_objectives_mda_problem_experiments():
@@ -256,16 +258,23 @@ def multiple_objectives_mda_problem_experiments():
     moderate_mda_problem_with_tests_travel_dist_cost = get_mda_problem('moderate', MDAOptimizationObjective.TestsTravelDistance)
 
     # Ex.35
-    # TODO: create an instance of `AStar` with the `MDATestsTravelDistToNearestLabHeuristic`,
+    # DONE: create an instance of `AStar` with the `MDATestsTravelDistToNearestLabHeuristic`,
+    tests_travel_dist_to_nearest_lab_AStar = AStar(heuristic_function_type=MDATestsTravelDistToNearestLabHeuristic)
     #       solve the `moderate_mda_problem_with_tests_travel_dist_cost` with it and print the results.
-    exit()  # TODO: remove!
+    res = tests_travel_dist_to_nearest_lab_AStar.solve_problem(moderate_mda_problem_with_tests_travel_dist_cost)
+    print(res)
+    exit() # TODO: remove!
 
     # Ex.38
-    # TODO: Implement the algorithm A_2 described in this exercise in the assignment instructions.
+    # DONE: Implement the algorithm A_2 described in this exercise in the assignment instructions.
     #       Create an instance of `AStar` with the `MDAMSTAirDistHeuristic`.
+    MST_air_dist_AStar = AStar(heuristic_function_type=MDAMSTAirDistHeuristic)
     #       Solve the `moderate_mda_problem_with_distance_cost` with it and store the solution's (optimal)
     #         distance cost to the variable `optimal_distance_cost`.
+    optimal_distance_cost = MST_air_dist_AStar.solve_problem(moderate_mda_problem_with_distance_cost).solution_g_cost
     #       Calculate the value (1 + eps) * optimal_distance_cost in the variable `max_distance_cost` (for eps=0.6).
+    eps = 0.6
+    max_distance_cost = (1+eps)*optimal_distance_cost
     #       Create another instance of `AStar` with the `MDATestsTravelDistToNearestLabHeuristic`, and specify the
     #          param `open_criterion` (to AStar c'tor) to be the criterion mentioned in the A_2 algorithm in the
     #          assignment instructions. Use a lambda function for that. This function should receive a `node` and
@@ -274,7 +283,13 @@ def multiple_objectives_mda_problem_experiments():
     #          `some_func(argument_name=some_value)`. This becomes especially relevant when you want to leave some
     #          previous parameters with their default values and pass an argument to a parameter that is positioned
     #          elsewhere next.
+    tests_travel_dist_to_nearest_lab_A2_variant_AStar = AStar(
+        heuristic_function_type=MDATestsTravelDistToNearestLabHeuristic,
+        open_criterion=lambda node : node.cost.distance_cost <= max_distance_cost
+    )
     #       Solve the `moderate_mda_problem_with_tests_travel_dist_cost` with it and print the results.
+    res = tests_travel_dist_to_nearest_lab_A2_variant_AStar.solve_problem(moderate_mda_problem_with_tests_travel_dist_cost)
+    print(res)
     exit()  # TODO: remove!
 
 
@@ -315,8 +330,11 @@ def mda_problem_anytime_astar_experiments():
 
     # Ex.46
     # TODO: create an instance of `AnytimeAStar` once with the `MDAMSTAirDistHeuristic`, with
-    #       `max_nr_states_to_expand_per_iteration` set to 1000, solve the
-    #       `moderate_mda_problem_with_distance_cost` with it and print the results.
+    #       `max_nr_states_to_expand_per_iteration` set to 1000,
+    anytime_AStar = AnytimeAStar(heuristic_function_type=MDAMSTAirDistHeuristic, max_nr_states_to_expand_per_iteration=1000)
+    #       solve the `moderate_mda_problem_with_distance_cost` with it and print the results.
+    res = anytime_AStar.solve_problem(moderate_mda_problem_with_distance_cost)
+    print(res)
     exit()  # TODO: remove!
 
 

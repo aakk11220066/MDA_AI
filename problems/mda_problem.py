@@ -205,7 +205,7 @@ class MDAProblem(GraphProblem):
             - The field `self.problem_input.ambulance.total_fridges_capacity`.
             - The method `self.get_reported_apartments_waiting_to_visit()` here.
             - The method `self.get_operator_cost()`.
-            - The c'tor for `AmbulanceState` to create the new successor state.
+            - The c'tor for `MDAState` to create the new successor state.
             - Python's built-in method `frozenset()` to create a new frozen set (for fields that
               expect this type) from another collection (set/list/tuple/iterator).
             - Other fields of the state and the problem input.
