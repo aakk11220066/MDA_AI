@@ -183,7 +183,9 @@ def basic_mda_problem_experiments():
     # Ex.18
     # TODO: create an instance of `UniformCost`, solve the `small_mda_problem_with_distance_cost`
     #       with it and print the results.
-    exit()  # TODO: remove!
+    uniform_cost = UniformCost()
+    solution = uniform_cost.solve_problem(small_mda_problem_with_distance_cost)
+    print(solution)
 
 
 def mda_problem_with_astar_experiments():
@@ -196,17 +198,23 @@ def mda_problem_with_astar_experiments():
     # Ex.22
     # TODO: create an instance of `AStar` with the `MDAMaxAirDistHeuristic`,
     #       solve the `moderate_mda_problem_with_distance_cost` with it and print the results.
-    exit()  # TODO: remove!
+    astar_maxair = AStar(MDAMaxAirDistHeuristic)
+    solution = astar_maxair.solve_problem(moderate_mda_problem_with_distance_cost)
+    print(solution)
 
     # Ex.25
     # TODO: create an instance of `AStar` with the `MDASumAirDistHeuristic`,
     #       solve the `moderate_mda_problem_with_distance_cost` with it and print the results.
-    exit()  # TODO: remove!
+    astar_sumair = AStar(MDASumAirDistHeuristic)
+    solution = astar_sumair.solve_problem(moderate_mda_problem_with_distance_cost)
+    print(solution)
 
     # Ex.28
     # TODO: create an instance of `AStar` with the `MDAMSTAirDistHeuristic`,
     #       solve the `moderate_mda_problem_with_distance_cost` with it and print the results.
-    exit()  # TODO: remove!
+    astar_mstair = AStar(MDAMSTAirDistHeuristic)
+    solution = astar_mstair.solve_problem(moderate_mda_problem_with_distance_cost)
+    print(solution)
 
 
 def mda_problem_with_weighted_astar_experiments():
@@ -220,13 +228,13 @@ def mda_problem_with_weighted_astar_experiments():
     # TODO: Call here the function `run_astar_for_weights_in_range()`
     #       with `MDAMSTAirDistHeuristic`
     #       over the `small_mda_problem_with_distance_cost`.
-    exit()  # TODO: remove!
+    run_astar_for_weights_in_range(MDAMSTAirDistHeuristic, small_mda_problem_with_distance_cost)
 
     # Ex.30
     # TODO: Call here the function `run_astar_for_weights_in_range()`
     #       with `MDASumAirDistHeuristic`
     #       over the `moderate_mda_problem_with_distance_cost`.
-    exit()  # TODO: remove!
+    run_astar_for_weights_in_range(MDASumAirDistHeuristic, small_mda_problem_with_distance_cost)
 
 
 def monetary_cost_objectives_mda_problem_experiments():
@@ -318,7 +326,11 @@ def mda_problem_with_astar_epsilon_experiments():
     #       Use focal_epsilon=0.23, and max_focal_size=40.
     #       Use within_focal_priority_function=within_focal_h_sum_priority_function. This function
     #        (defined just above) is internally using the `MDASumAirDistHeuristic`.
-    exit()  # TODO: remove!
+    astar_epsilon = AStarEpsilon(heuristic_function_type=MDAMSTAirDistHeuristic,
+                                 within_focal_priority_function=within_focal_h_sum_priority_function,
+                                 focal_epsilon=0.23, max_focal_size=40)
+    solution = astar_epsilon.solve_problem(small_mda_problem_with_distance_cost)
+    print(solution)
 
 
 def mda_problem_anytime_astar_experiments():
@@ -341,10 +353,10 @@ def mda_problem_anytime_astar_experiments():
 def run_all_experiments():
     print('Running all experiments')
     toy_map_problem_experiments()
-    # basic_mda_problem_experiments()                       # TODO: uncomment
-    # mda_problem_with_astar_experiments()                  # TODO: uncomment
-    # mda_problem_with_weighted_astar_experiments()         # TODO: uncomment
-    # monetary_cost_objectives_mda_problem_experiments()    # TODO: uncomment
+    basic_mda_problem_experiments()                       # TODO: uncomment
+    mda_problem_with_astar_experiments()                  # TODO: uncomment
+    mda_problem_with_weighted_astar_experiments()         # TODO: uncomment
+    monetary_cost_objectives_mda_problem_experiments()    # TODO: uncomment
     multiple_objectives_mda_problem_experiments()
     mda_problem_with_astar_epsilon_experiments()
     mda_problem_anytime_astar_experiments()
