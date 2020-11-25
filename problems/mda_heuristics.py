@@ -6,7 +6,6 @@ from framework import *
 from .mda_problem import *
 from .cached_air_distance_calculator import CachedAirDistanceCalculator
 
-
 __all__ = ['MDAMaxAirDistHeuristic', 'MDASumAirDistHeuristic',
            'MDAMSTAirDistHeuristic', 'MDATestsTravelDistToNearestLabHeuristic']
 
@@ -166,13 +165,9 @@ class MDATestsTravelDistToNearestLabHeuristic(HeuristicFunction):
             """
             assert isinstance(self.problem, MDAProblem)
             return min(
-                self.cached_air_distance_calculator.get_air_distance_between_junctions(
-                    junction,
-                    self.problem.streets_map[lab]
-                )
-                    for lab in self.problem.problem_input.laboratories
+                self.cached_air_distance_calculator.get_air_distance_between_junctions(junction, lab.location)
+                for lab in self.problem.problem_input.laboratories
             )  # DONE: replace `...` with the relevant implementation.
 
         return sum(air_dist_to_closest_lab(apartment.location) * apartment.nr_roommates
                    for apartment in self.problem.get_reported_apartments_waiting_to_visit(state))
-

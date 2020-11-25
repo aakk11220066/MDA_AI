@@ -255,7 +255,7 @@ class MDAProblem(GraphProblem):
          In order to create a set from some other collection (list/tuple) you can just `set(some_other_collection)`.
         """
         assert isinstance(state, MDAState)
-        raise NotImplementedError  # TODO: remove the line!
+        return frozenset(self.problem_input.reported_apartments) == state.tests_transferred_to_lab
 
     def get_zero_cost(self) -> Cost:
         """
@@ -282,7 +282,10 @@ class MDAProblem(GraphProblem):
                 generated set.
             Note: This method can be implemented using a single line of code. Try to do so.
         """
-        raise NotImplementedError  # TODO: remove this line!
+        return sorted(
+            list(frozenset(self.problem_input.reported_apartments) - state.tests_transferred_to_lab - state.tests_on_ambulance),
+            key=lambda apartment : apartment.report_id
+        )
 
     def get_all_certain_junctions_in_remaining_ambulance_path(self, state: MDAState) -> List[Junction]:
         """
