@@ -96,7 +96,8 @@ class AnytimeAStar(GraphProblemSolver):
                 #   (SearchResult object) found with the best g-cost (use `solution_g_cost` field of SearchResult to
                 #   obtain the g-cost of a solution). Update iff the current inspected solution cost < the cost of
                 #   the best found solution so far.
-                if middleweight_res.solution_g_cost < best_solution.solution_g_cost:
+                if middleweight_res.is_solution_found \
+                        and middleweight_res.solution_g_cost < best_solution.solution_g_cost:
                     best_solution = middleweight_res
                     best_heuristic_weight = middleweight
                 #  Make sure to also read the big comment in the head of this class.
