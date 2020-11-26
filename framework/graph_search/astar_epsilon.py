@@ -58,7 +58,7 @@ class AStarEpsilon(AStar):
          order (small to big). Popping / peeking `open` returns the node with
          the smallest `f`.
         For each node (candidate) in the created focal, calculate its priority
-         by callingthe function `self.within_focal_priority_function` on it.
+         by calling the function `self.within_focal_priority_function` on it.
          This function expects to get 3 values: the node, the problem and the
          solver (self). You can create an array of these priority value. Then,
          use `np.argmin()` to find the index of the item (within this array)
@@ -73,15 +73,23 @@ class AStarEpsilon(AStar):
         """
 
 
-        # TODO: Need to check and maybe refactor
+        # DONE: Need to check and maybe refactor
         # corner case
         if self.open.is_empty():
             return None
 
+        # Find the minimum expanding-priority value in the `open` queue.
         first = self.open.peek_next_node()
         minimum_open = first.expanding_priority
+        # Calculate the maximum expanding-priority of the FOCAL, which is
+        #  the min expanding-priority in open multiplied by (1 + eps) where
+        #  eps is stored under `self.focal_epsilon`.
         maximum_focal = minimum_open * (1 + self.focal_epsilon)
         size_limit = self.max_focal_size
+
+        # Create the FOCAL by popping items from the `open` queue and inserting
+        #          them into a focal list. Don't forget to satisfy the constraint of
+        #          `self.max_focal_size` if it is set (not None).
         not_used_list = []
         focal_list = []
 
@@ -96,9 +104,9 @@ class AStarEpsilon(AStar):
             self.open.push_node(item)
         for item in focal_list:
             self.open.push_node(item)
-        array = [self.within_focal_priority_function(item, problem, self) for item in focal_list]
-        index = np.argmin(array)
-        next_item = focal_list[index]
+
+        priorities = map(lambda item: self.within_focal_priority_function(item, problem, self), focal_list)
+        next_item = focal_list[np.argmin(priorities)]
         self.open.extract_node(next_item)
         if self.use_close:
             self.close.add_node(next_item)

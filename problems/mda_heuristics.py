@@ -70,13 +70,13 @@ class MDASumAirDistHeuristic(HeuristicFunction):
         This heuristic evaluates the distance of the remaining ambulance route in the following way:
         It builds a path that starts in the current ambulance's location, and each next junction in
          the path is the (air-distance) nearest junction (to the previous one in the path) among
-         all certain junctions (in `all_certain_junctions_in_remaining_ambulance_path`) that haven't
+         all certain junctions (in `remaining_junctions`) that haven't
          been visited yet.
         The remaining distance estimation is the cost of this built path.
         Note that we ignore here the problem constraints (like enforcing the #matoshim and free
          space in the ambulance's fridge). We only make sure to visit all certain junctions in
-         `all_certain_junctions_in_remaining_ambulance_path`.
-        TODO [Ex.24]:
+         `remaining_junctions`.
+        DONE [Ex.24]:
             Complete the implementation of this method.
             Use `self.cached_air_distance_calculator.get_air_distance_between_junctions()` for air
              distance calculations.
@@ -89,23 +89,20 @@ class MDASumAirDistHeuristic(HeuristicFunction):
         """
         assert isinstance(self.problem, MDAProblem)
         assert isinstance(state, MDAState)
-
-        all_certain_junctions_in_remaining_ambulance_path = \
-            self.problem.get_all_certain_junctions_in_remaining_ambulance_path(state)
-
-        if len(all_certain_junctions_in_remaining_ambulance_path) < 2:
+        '''
+        if len(remaining_junctions) <= 1:
             return 0
 
-        # TODO: Need to check and maybe refactor
+        # DONE: Need to check and maybe refactor
         heuristic_value = 0
         path_length = 1
         path = [state.current_location]
-        sorted_remaining_junctions_unique = set(all_certain_junctions_in_remaining_ambulance_path)
-        while path_length < len(all_certain_junctions_in_remaining_ambulance_path):
+        sorted_remaining_junctions_unique = set(remaining_junctions)
+        while path_length < len(remaining_junctions):
             minimum_junction = None
             minimum_distance = 0
             curr_junction = path[-1]
-            for j1 in all_certain_junctions_in_remaining_ambulance_path:
+            for j1 in remaining_junctions:
                 if curr_junction != j1 and j1 not in path:
                     if (minimum_distance > self.cached_air_distance_calculator.get_air_distance_between_junctions(curr_junction, j1)
                             or minimum_distance is 0):
@@ -118,6 +115,24 @@ class MDASumAirDistHeuristic(HeuristicFunction):
             path_length += 1
 
         return heuristic_value
+        '''
+
+        def estimate_recursive(current_location: Junction, remaining_junctions: List[Junction]):
+            if len(remaining_junctions) <= 1:
+                return 0
+
+            remaining_junctions.remove(current_location)
+            next_junction = min(
+                remaining_junctions,
+                key=lambda other_junction: self.cached_air_distance_calculator.get_air_distance_between_junctions(
+                    current_location, other_junction
+                )
+            )
+            return self.cached_air_distance_calculator.get_air_distance_between_junctions(current_location, next_junction) \
+                   + estimate_recursive(next_junction, remaining_junctions)
+
+        return estimate_recursive(state.current_location, self.problem.get_all_certain_junctions_in_remaining_ambulance_path(state))
+
 
 class MDAMSTAirDistHeuristic(HeuristicFunction):
     heuristic_name = 'MDA-MST-AirDist'

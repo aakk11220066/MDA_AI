@@ -70,17 +70,17 @@ class AStar(BestFirstSearch):
                   but still could be improved.
         """
 
+        # if self.open.has_state(successor_node.state):
+        #     old = self.open.get_node_by_state(successor_node.state)
+        #     if successor_node.g_cost < old.g_cost:
+        #         self.open.extract_node(old)
+        #
         # if self.close.has_state(successor_node.state):
         #     old = self.close.get_node_by_state(successor_node.state)
         #     if successor_node.g_cost < old.g_cost:
         #         self.open.push_node(successor_node)
         #         self.close.remove_node(old)
         #     return
-        #
-        # if self.open.has_state(successor_node.state):
-        #     old = self.open.get_node_by_state(successor_node.state)
-        #     if successor_node.g_cost < old.g_cost:
-        #         self.open.extract_node(old)
         #
         # if not self.open.has_state(successor_node.state):
         #     self.open.push_node(successor_node)
@@ -90,17 +90,10 @@ class AStar(BestFirstSearch):
             old_node = self.open.get_node_by_state(successor_node.state)
             if successor_node.g_cost < old_node.g_cost:
                 self.open.extract_node(old_node)
-                old_node.cost = successor_node.cost
-                old_node.parent_search_node = successor_node.parent_search_node
-                # should update f_score?
-                self.open.push_node(old_node)
         elif self.close.has_state(successor_node.state):
             old_node = self.close.get_node_by_state(successor_node.state)
             if successor_node.g_cost < old_node.g_cost:
                 self.close.remove_node(old_node)
-                old_node.cost = successor_node.cost
-                old_node.parent_search_node = successor_node.parent_search_node
-                # should update f_score?
-                self.open.push_node(old_node)
+                self.open.push_node(successor_node)
         else:
             self.open.push_node(successor_node)
