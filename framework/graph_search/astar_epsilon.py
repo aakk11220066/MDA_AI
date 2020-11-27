@@ -95,7 +95,7 @@ class AStarEpsilon(AStar):
 
         while not self.open.is_empty():
             curr = self.open.pop_next_node()
-            if (len(focal_list) <= size_limit or size_limit is None) and curr.expanding_priority <= maximum_focal:
+            if (len(focal_list) <= size_limit or size_limit is None) and (curr.expanding_priority <= maximum_focal):
                 focal_list.append(curr)
             else:
                 not_used_list.append(curr)
@@ -105,8 +105,10 @@ class AStarEpsilon(AStar):
         for item in focal_list:
             self.open.push_node(item)
 
-        priorities = map(lambda item: self.within_focal_priority_function(item, problem, self), focal_list)
-        next_item = focal_list[np.argmin(priorities)]
+        priorities = np.argmin([self.within_focal_priority_function(item, problem, self) for item in focal_list]).squeeze()
+        # priorities = map(lambda item: self.within_focal_priority_function(item, problem, self), focal_list)
+        # priorities_index = np.argmin(priorities).squeeze()
+        next_item = focal_list[priorities]
         self.open.extract_node(next_item)
         if self.use_close:
             self.close.add_node(next_item)

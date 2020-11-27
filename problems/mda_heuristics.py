@@ -89,33 +89,35 @@ class MDASumAirDistHeuristic(HeuristicFunction):
         """
         assert isinstance(self.problem, MDAProblem)
         assert isinstance(state, MDAState)
-        '''
-        if len(remaining_junctions) <= 1:
-            return 0
 
+        # remaining_junctions = self.problem.get_all_certain_junctions_in_remaining_ambulance_path(state)
+        # if len(remaining_junctions) <= 1:
+        #     return 0
+        #
         # DONE: Need to check and maybe refactor
-        heuristic_value = 0
-        path_length = 1
-        path = [state.current_location]
-        sorted_remaining_junctions_unique = set(remaining_junctions)
-        while path_length < len(remaining_junctions):
-            minimum_junction = None
-            minimum_distance = 0
-            curr_junction = path[-1]
-            for j1 in remaining_junctions:
-                if curr_junction != j1 and j1 not in path:
-                    if (minimum_distance > self.cached_air_distance_calculator.get_air_distance_between_junctions(curr_junction, j1)
-                            or minimum_distance is 0):
-                        minimum_distance = self.cached_air_distance_calculator.get_air_distance_between_junctions(curr_junction, j1)
-                        minimum_junction = j1
+        # heuristic_value = 0
+        # path_length = 1
+        # path = [state.current_location]
+        # sorted_remaining_junctions_unique = set(remaining_junctions)
+        # while path_length < len(remaining_junctions):
+        #     minimum_junction = None
+        #     minimum_distance = 0
+        #     curr_junction = path[-1]
+        #     for j1 in remaining_junctions:
+        #         if curr_junction != j1 and j1 not in path:
+        #             if (minimum_distance > self.cached_air_distance_calculator.get_air_distance_between_junctions(curr_junction, j1)
+        #                     or minimum_distance is 0):
+        #                 minimum_distance = self.cached_air_distance_calculator.get_air_distance_between_junctions(curr_junction, j1)
+        #                 minimum_junction = j1
+        #
+        #     if minimum_junction:
+        #         path.append(minimum_junction)
+        #         heuristic_value += minimum_distance
+        #     path_length += 1
+        #
+        # return heuristic_value
 
-            if minimum_junction:
-                path.append(minimum_junction)
-                heuristic_value += minimum_distance
-            path_length += 1
-
-        return heuristic_value
-        '''
+         #
 
         def estimate_recursive(current_location: Junction, remaining_junctions: List[Junction]):
             if len(remaining_junctions) <= 1:
@@ -176,7 +178,8 @@ class MDAMSTAirDistHeuristic(HeuristicFunction):
         for junction in junctions:
             for junction_2 in junctions:
                 if junction != junction_2 and not graph.has_edge(junction, junction_2):
-                    graph.add_edge(junction, junction_2, weight=self.cached_air_distance_calculator.get_air_distance_between_junctions(junction, junction_2))
+                    graph.add_edge(junction, junction_2,
+                    weight=self.cached_air_distance_calculator.get_air_distance_between_junctions(junction, junction_2))
         minimum_spanning_tree = nx.minimum_spanning_tree(graph)
         return minimum_spanning_tree.size(weight='weight')
 
@@ -218,5 +221,6 @@ class MDATestsTravelDistToNearestLabHeuristic(HeuristicFunction):
                 for lab in self.problem.problem_input.laboratories
             )  # DONE: replace `...` with the relevant implementation.
 
-        return sum(air_dist_to_closest_lab(apartment.location) * apartment.nr_roommates
+        return (sum(air_dist_to_closest_lab(apartment.location) * apartment.nr_roommates
                    for apartment in self.problem.get_reported_apartments_waiting_to_visit(state))
+                + (air_dist_to_closest_lab(state.current_location) * state.get_total_nr_tests_taken_and_stored_on_ambulance()))
