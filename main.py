@@ -319,7 +319,7 @@ def mda_problem_with_astar_epsilon_experiments():
 
     # Ex.43
     # Try using A*eps to improve the speed (#dev) with a non-acceptable heuristic.
-    # DOJE: Create an instance of `AStarEpsilon` with the `MDAMSTAirDistHeuristic`.
+    # DONE: Create an instance of `AStarEpsilon` with the `MDAMSTAirDistHeuristic`.
     #       Solve the `small_mda_problem_with_distance_cost` with it and print the results.
     #       Use focal_epsilon=0.23, and max_focal_size=40.
     #       Use within_focal_priority_function=within_focal_h_sum_priority_function. This function
