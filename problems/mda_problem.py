@@ -85,8 +85,6 @@ class MDAState(GraphProblemState):
             or self.tests_transferred_to_lab != other.tests_transferred_to_lab
             or self.visited_labs != other.visited_labs
             or self.nr_matoshim_on_ambulance != other.nr_matoshim_on_ambulance):
-            # elif self.current_site != other.current_site:
-            # TODO check if also needed or that current_location is enough
             return False
         return True
 
@@ -295,8 +293,8 @@ class MDAProblem(GraphProblem):
                                 its first `k` items and until the `n`-th item.
             You might find this tip useful for summing a slice of a collection.
         """
-        distance_cost = self.map_distance_finder.get_map_cost_between(prev_state.current_location,
-                                                                      succ_state.current_location)
+        distance_cost = self.map_distance_finder.get_map_cost_between(src_junction=prev_state.current_location,
+                                                                      tgt_junction=succ_state.current_location)
         if distance_cost is None:
             distance_cost = float('inf')
             monetary_cost = float('inf')
@@ -305,13 +303,13 @@ class MDAProblem(GraphProblem):
         else:
             gas_liter_price = self.problem_input.gas_liter_price
             drive_gas_consumption = self.problem_input.ambulance.drive_gas_consumption_liter_per_meter
-            active_fridges = math.ceil(prev_state.get_total_nr_tests_taken_and_stored_on_ambulance() / self.problem_input.ambulance.fridge_capacity)
-            fridges_gas_consumption = sum(self.problem_input.ambulance.fridges_gas_consumption_liter_per_meter[0:active_fridges])
-            i_taken_is_empty = prev_state.get_total_nr_tests_taken_and_stored_on_ambulance() > 0
+            active_fridges = math.ceil(float(prev_state.get_total_nr_tests_taken_and_stored_on_ambulance()) / self.problem_input.ambulance.fridge_capacity)
+            fridges_gas_consumption = sum(self.problem_input.ambulance.fridges_gas_consumption_liter_per_meter[:active_fridges])
             is_lab = isinstance(succ_state.current_site, Laboratory) is True
+            i_taken_is_empty = prev_state.get_total_nr_tests_taken_and_stored_on_ambulance() > 0
             tests_transfer_cost = succ_state.current_site.tests_transfer_cost if is_lab else 0
             revisit_extra_cost = succ_state.current_site.revisit_extra_cost if is_lab else 0
-            is_revisit = succ_state.current_location in succ_state.visited_labs
+            is_revisit = succ_state.current_site in prev_state.visited_labs
 
             gas_total_price = gas_liter_price * (drive_gas_consumption + fridges_gas_consumption) * distance_cost
             lab_total_cost = is_lab * ((i_taken_is_empty * tests_transfer_cost)
@@ -362,9 +360,8 @@ class MDAProblem(GraphProblem):
             Note: This method can be implemented using a single line of code. Try to do so.
         """
         return sorted(
-            list(frozenset(self.problem_input.reported_apartments) - state.tests_transferred_to_lab - state.tests_on_ambulance),
-            key=lambda apartment: apartment.report_id
-        )
+            set(self.problem_input.reported_apartments) - set(state.tests_on_ambulance)
+            - set(state.tests_transferred_to_lab), key=lambda apartment: apartment.report_id)
 
     def get_all_certain_junctions_in_remaining_ambulance_path(self, state: MDAState) -> List[Junction]:
         """

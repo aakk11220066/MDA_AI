@@ -90,15 +90,14 @@ class MDASumAirDistHeuristic(HeuristicFunction):
         assert isinstance(self.problem, MDAProblem)
         assert isinstance(state, MDAState)
 
+        #
         # remaining_junctions = self.problem.get_all_certain_junctions_in_remaining_ambulance_path(state)
         # if len(remaining_junctions) <= 1:
         #     return 0
         #
-        # DONE: Need to check and maybe refactor
         # heuristic_value = 0
         # path_length = 1
         # path = [state.current_location]
-        # sorted_remaining_junctions_unique = set(remaining_junctions)
         # while path_length < len(remaining_junctions):
         #     minimum_junction = None
         #     minimum_distance = 0
@@ -106,7 +105,7 @@ class MDASumAirDistHeuristic(HeuristicFunction):
         #     for j1 in remaining_junctions:
         #         if curr_junction != j1 and j1 not in path:
         #             if (minimum_distance > self.cached_air_distance_calculator.get_air_distance_between_junctions(curr_junction, j1)
-        #                     or minimum_distance is 0):
+        #                     or minimum_distance == 0):
         #                 minimum_distance = self.cached_air_distance_calculator.get_air_distance_between_junctions(curr_junction, j1)
         #                 minimum_junction = j1
         #
@@ -117,7 +116,7 @@ class MDASumAirDistHeuristic(HeuristicFunction):
         #
         # return heuristic_value
 
-         #
+
 
         def estimate_recursive(current_location: Junction, remaining_junctions: List[Junction]):
             if len(remaining_junctions) <= 1:
