@@ -90,34 +90,6 @@ class MDASumAirDistHeuristic(HeuristicFunction):
         assert isinstance(self.problem, MDAProblem)
         assert isinstance(state, MDAState)
 
-        #
-        # remaining_junctions = self.problem.get_all_certain_junctions_in_remaining_ambulance_path(state)
-        # if len(remaining_junctions) <= 1:
-        #     return 0
-        #
-        # heuristic_value = 0
-        # path_length = 1
-        # path = [state.current_location]
-        # while path_length < len(remaining_junctions):
-        #     minimum_junction = None
-        #     minimum_distance = 0
-        #     curr_junction = path[-1]
-        #     for j1 in remaining_junctions:
-        #         if curr_junction != j1 and j1 not in path:
-        #             if (minimum_distance > self.cached_air_distance_calculator.get_air_distance_between_junctions(curr_junction, j1)
-        #                     or minimum_distance == 0):
-        #                 minimum_distance = self.cached_air_distance_calculator.get_air_distance_between_junctions(curr_junction, j1)
-        #                 minimum_junction = j1
-        #
-        #     if minimum_junction:
-        #         path.append(minimum_junction)
-        #         heuristic_value += minimum_distance
-        #     path_length += 1
-        #
-        # return heuristic_value
-
-
-
         def estimate_recursive(current_location: Junction, remaining_junctions: List[Junction]):
             if len(remaining_junctions) <= 1:
                 return 0
@@ -218,7 +190,7 @@ class MDATestsTravelDistToNearestLabHeuristic(HeuristicFunction):
             return min(
                 self.cached_air_distance_calculator.get_air_distance_between_junctions(junction, lab.location)
                 for lab in self.problem.problem_input.laboratories
-            )  # DONE: replace `...` with the relevant implementation.
+            )
 
         return (sum(air_dist_to_closest_lab(apartment.location) * apartment.nr_roommates
                    for apartment in self.problem.get_reported_apartments_waiting_to_visit(state))
