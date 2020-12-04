@@ -95,7 +95,7 @@ class AStarEpsilon(AStar):
 
         while not self.open.is_empty():
             curr = self.open.pop_next_node()
-            if (len(focal_list) <= size_limit or size_limit is None) and (curr.expanding_priority <= maximum_focal):
+            if (size_limit is None or len(focal_list) <= size_limit) and (curr.expanding_priority <= maximum_focal):
                 focal_list.append(curr)
             else:
                 not_used_list.append(curr)
