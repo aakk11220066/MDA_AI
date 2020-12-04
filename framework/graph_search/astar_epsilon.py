@@ -73,7 +73,7 @@ class AStarEpsilon(AStar):
         """
 
 
-        # DONE: Need to check and maybe refactor
+
         # corner case
         if self.open.is_empty():
             return None
@@ -106,8 +106,6 @@ class AStarEpsilon(AStar):
             self.open.push_node(item)
 
         priorities = np.argmin([self.within_focal_priority_function(item, problem, self) for item in focal_list]).squeeze()
-        # priorities = map(lambda item: self.within_focal_priority_function(item, problem, self), focal_list)
-        # priorities_index = np.argmin(priorities).squeeze()
         next_item = focal_list[priorities]
         self.open.extract_node(next_item)
         if self.use_close:
